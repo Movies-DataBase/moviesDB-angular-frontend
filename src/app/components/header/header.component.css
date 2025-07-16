@@ -1,0 +1,21 @@
+.nav-container {
+    display: flex;
+    justify-content: center;
+    flex-grow: 1;
+}
+.nav-items {
+    margin: 0 15px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    color:white;
+    text-decoration: none;
+}
+.nav-items:hover {
+    color:rgb(255, 213, 213)
+}
+.active-link {
+  font-weight: 500;
+  border:1px solid white;
+  border-radius: 5px;
+  padding: 0 5px;
+}

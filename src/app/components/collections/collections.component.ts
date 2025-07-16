@@ -16,10 +16,10 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     CommonModule,
     MatProgressSpinnerModule,
   ],
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css'],
+  templateUrl: './collections.component.html',
+  styleUrls: ['./collections.component.css'],
 })
-export class HomeComponent {
+export class CollectionsComponent {
   searchTerm: string = '';
   moviesList: any;
   totalRecords: Number = 0;
