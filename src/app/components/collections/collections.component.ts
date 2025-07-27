@@ -1,4 +1,4 @@
-import { Component, inject , PLATFORM_ID} from '@angular/core';
+import { Component, inject , OnInit} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
@@ -19,45 +19,39 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
   templateUrl: './collections.component.html',
   styleUrls: ['./collections.component.css'],
 })
-export class CollectionsComponent {
-  searchTerm: string = '';
-  moviesList: any;
-  totalRecords: Number = 0;
-  displayedColumns: string[] = ['Poster', 'Title', 'Year', 'Type'];
-  showMoviesTable: boolean = false;
+export class CollectionsComponent  implements OnInit {
   showSearchSpinner:boolean = false;
+  userId: string = '1111';
+  collectionsList: any;
+  groupedMovies: { [collection: string]: any[] } = {};
 
   constructor(private http: HttpClient) {}
 
-  onSubmitSearch() {
-    this.showMoviesTable = false;
+  ngOnInit(): void {
     this.showSearchSpinner = true;
     this.http
-      .get('https://node-backend-7q02.onrender.com/api/movie-search-by-name', {
-        params: { s: this.searchTerm, page: 1 },
+      .get('https://node-backend-7q02.onrender.com/api/userCollectionDetails/' + this.userId, {
       })
       .subscribe({
         next: (data: any) => {
-          console.log('Success:', data);
-          if (
-            data['Response'] === 'False' &&
-            data['Error'] === 'Too many results.'
-          ) {
-            this.openSnackBar();
-          } else if (
-            data['Response'] === 'True' &&
-            Number(data['totalResults']) > 0
-          ) {
-            this.moviesList = data['Search'];
-            this.totalRecords = Number(data['totalResults']);
-            this.showSearchSpinner = false;
-            this.showMoviesTable = true;
-          }
+          this.groupedMovies = this.groupByCollection(data.rows)
         },
         error: (err) => {
           console.error('Error occurred:', err);
         },
       });
+    this.showSearchSpinner = false;
+  }
+  groupByCollection(rows: any[]): { [collection: string]: any[] } {
+    const grouped: { [collection: string]: any[] } = {};
+    for (const row of rows) {
+      const collection = row.collection_name || 'Uncategorized';
+      if (!grouped[collection]) {
+        grouped[collection] = [];
+      }
+      grouped[collection].push(row);
+    }
+    return grouped;
   }
 
   private _snackBar = inject(MatSnackBar);

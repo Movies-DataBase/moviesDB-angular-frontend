@@ -2,11 +2,27 @@
   <h2>Collections</h2>
   <p>Here you can manage your movie collections.</p>
 </div>
-<div class="collections-container">
-  <!-- Add more content related to collections here -->
-  <div class="collection">
-    <div class="movie">Movie 1</div>
-    <div class="movie">Movie 2</div>
-    <div class="movie">Movie 3</div>
+<mat-spinner *ngIf="showSearchSpinner"></mat-spinner>
+
+<div *ngFor="let collection of groupedMovies | keyvalue">
+  <h2 class="text-xl font-bold mb-2">{{ collection.key }}</h2>
+  
+  <div class="flex flex-wrap gap-4 mb-8">
+    <div 
+      *ngFor="let movie of collection.value" 
+      class="w-60 bg-white rounded-xl shadow p-4"
+    >
+      <img 
+        [src]="movie.movie_poster_link || 'https://www.content.numetro.co.za/ui_images/no_poster.png'" 
+        alt="{{ movie.movie_name }}" 
+        class="w-full h-40 object-cover rounded"
+      />
+      <div class="mt-2">
+        <h3 class="text-lg font-semibold">{{ movie.movie_name }}</h3>
+        <p class="text-sm text-gray-500">Genre: {{ movie.movie_genre || 'N/A' }}</p>
+        <p class="text-sm text-gray-500">Year: {{ movie.movie_year || 'N/A' }}</p>
+        <p class="text-sm text-gray-500">Type: {{ movie.movie_type || 'N/A' }}</p>
+      </div>
+    </div>
   </div>
 </div>
