@@ -1,16 +1,16 @@
 <div class="collection-heading">
-  <h2>Collections</h2>
+  <div class="collection-header">Collections</div>
   <p>Here you can manage your movie collections.</p>
 </div>
 <mat-spinner *ngIf="showSearchSpinner"></mat-spinner>
 
-<div *ngFor="let collection of groupedMovies | keyvalue">
+<div *ngFor="let collection of groupedMovies | keyvalue" class="collection-card">
   <h2 class="text-xl font-bold mb-2">{{ collection.key }}</h2>
   
-  <div class="flex flex-wrap gap-4 mb-8">
+  <div>
     <div 
       *ngFor="let movie of collection.value" 
-      class="w-60 bg-white rounded-xl shadow p-4"
+      class="movie-card"
     >
       <img 
         [src]="movie.movie_poster_link || 'https://www.content.numetro.co.za/ui_images/no_poster.png'" 

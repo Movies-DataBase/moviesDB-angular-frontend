@@ -1,0 +1,17 @@
+.collection-heading {
+    margin: 1rem;
+    display: grid;
+    place-items: center;
+}
+
+.collection-header {
+    font-weight: 500;
+    font-size: 1.5rem;
+}
+
+.collection-card,.movie-card{
+    border: 1px solid #ccc;
+    margin: 1rem 0.5rem;
+    border-radius:5px;
+    padding:5px;
+}

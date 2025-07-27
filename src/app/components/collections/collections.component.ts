@@ -34,13 +34,13 @@ export class CollectionsComponent  implements OnInit {
       })
       .subscribe({
         next: (data: any) => {
-          this.groupedMovies = this.groupByCollection(data.rows)
+          this.groupedMovies = this.groupByCollection(data.rows);
+          this.showSearchSpinner = false;
         },
         error: (err) => {
           console.error('Error occurred:', err);
         },
       });
-    this.showSearchSpinner = false;
   }
   groupByCollection(rows: any[]): { [collection: string]: any[] } {
     const grouped: { [collection: string]: any[] } = {};
