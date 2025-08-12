@@ -28,7 +28,10 @@ export class HomeComponent {
   showSearchSpinner:boolean = false;
 
   constructor(private http: HttpClient) {}
-
+  goToMovie(row: any) {
+    const movieId = row.imdbID;
+    window.location.href = `/movie/${movieId}`;
+  }
   onSubmitSearch() {
     this.showMoviesTable = false;
     this.showSearchSpinner = true;
