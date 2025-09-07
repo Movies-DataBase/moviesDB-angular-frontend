@@ -1,117 +1,145 @@
-import { Component, inject , OnInit, PLATFORM_ID} from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { MatSnackBar,MatSnackBarVerticalPosition, } from '@angular/material/snack-bar';
+import { MatSnackBar, MatSnackBarVerticalPosition } from '@angular/material/snack-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatDialog } from '@angular/material/dialog';
 import { CapitalizeFirstPipe } from '../capitalizeFirst.pipe copy';
 import { RemoveTrailingDashesPipe } from '../removeDashes.pipe';
 import { CollectionService } from '../../collection.service';
-import {ChangeDetectionStrategy, model, signal} from '@angular/core';
-import {MatButtonModule} from '@angular/material/button';
-import {
-  MatDialog,
-  MatDialogActions,
-  MatDialogContent,
-  MatDialogRef,
-  MatDialogTitle,
-  MatDialogClose,
-} from '@angular/material/dialog';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatInputModule} from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialogModule } from '@angular/material/dialog';
+
+interface Movie {
+  imdbID: string;
+  Title: string;
+  Year: string;
+  Type: string;
+  Poster: string;
+}
+
 interface Row {
   collection_name: string;
 }
-
-import {MatIconModule} from '@angular/material/icon';
-import {MatDividerModule} from '@angular/material/divider';
-
 
 @Component({
   standalone: true,
   selector: 'home',
   imports: [
+    CommonModule,
     FormsModule,
     HttpClientModule,
     MatTableModule,
-    CommonModule,
     MatProgressSpinnerModule,
     RemoveTrailingDashesPipe,
     CapitalizeFirstPipe,
     MatButtonModule,
-    MatFormFieldModule,
-    MatInputModule,
-    FormsModule,
-    MatButtonModule,
-    MatDialogTitle,
-    MatDialogContent,
-    MatDialogActions,MatButtonModule, MatDividerModule, MatIconModule
+    MatDialogModule
   ],
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css'],
+  styleUrls: ['./home.component.css']
 })
-export class HomeComponent implements OnInit{
-  moviesList: any;
-  totalRecords: Number = 0;
+export class HomeComponent implements OnInit {
+  moviesList: Movie[] = [];
+  totalRecords: number = 0;
   displayedColumns: string[] = ['Poster', 'Title', 'Year', 'Type', 'Action'];
   showMoviesTable: boolean = false;
-  showSearchSpinner:boolean = false;
+  showSearchSpinner: boolean = false;
   searchTerm: string = '';
-  isAddMovieModalOpen: boolean = false;
-
-  constructor(private http: HttpClient, private collectionService: CollectionService) {}
-
+  
+  // Collections related properties
   collectionsList: string[] = [];
+  selectedCollections: string[] = [];
+  newCollectionName: string = '';
+  isAddMovieModalOpen: boolean = false;
+  movieInAddPopup: Movie | null = null;
 
-    ngOnInit() {
+  private _snackBar = inject(MatSnackBar);
+  private dialog = inject(MatDialog);
+
+  constructor(
+    private http: HttpClient,
+    private collectionService: CollectionService
+  ) {}
+
+  ngOnInit() {
     const savedValue = localStorage.getItem('searchTerm');
     if (savedValue !== null) {
       this.searchTerm = savedValue;
     }
   }
-    setSearchTerm() {
+
+  setSearchTerm() {
     localStorage.setItem('searchTerm', this.searchTerm);
   }
-  goToMovie(row: any) {
-    const movieId = row.imdbID;
-    window.location.href = `/movie/${movieId}`;
+
+  goToMovie(row: Movie) {
+    if (row.imdbID) {
+      window.location.href = `/movie/${row.imdbID}`;
+    }
   }
-  addToCollection(movie: any) {
+
+  addToCollection(movie: Movie) {
+    this.movieInAddPopup = movie;
     this.collectionService.getCollectionsListById('1111').subscribe({
-      next: (data) => {
-        this.collectionsList = data.rows.map(((row: Row) => row.collection_name));
+      next: (data: { rows: Row[] }) => {
+        this.collectionsList = data.rows.map(row => row.collection_name);
+        this.selectedCollections = [];
+        this.newCollectionName = '';
         this.isAddMovieModalOpen = true;
       },
       error: (err) => {
         console.error('Error fetching user collections:', err);
-      },
+      }
     });
   }
-  
-  readonly dialog = inject(MatDialog);
-openMovieAddDialog(movie:any) {
-}
+
+  onCollectionCheckboxChange(collectionName: string, event: Event) {
+    const checkbox = event.target as HTMLInputElement;
+    const name = collectionName.trim();
+    
+    if (!name) return;
+
+    if (checkbox.checked) {
+      if (!this.selectedCollections.includes(name)) {
+        this.selectedCollections.push(name);
+      }
+      if (!this.collectionsList.includes(name)) {
+        this.collectionsList.push(name);
+      }
+    } else {
+      const index = this.selectedCollections.indexOf(name);
+      if (index > -1) {
+        this.selectedCollections.splice(index, 1);
+      }
+    }
+    console.log('Selected Collections:', this.selectedCollections);
+  }
+
+  addToSelectedCollections() {
+    if (this.movieInAddPopup && this.selectedCollections.length > 0) {
+      console.log('Adding movie', this.movieInAddPopup, 'to collections:', this.selectedCollections);
+      // Add your API call here
+      this.isAddMovieModalOpen = false;
+      this.selectedCollections = [];
+      this.newCollectionName = '';
+    }
+  }
 
   onSubmitSearch() {
     this.showMoviesTable = false;
     this.showSearchSpinner = true;
     this.http
-      .get('https://node-backend-7q02.onrender.com/api/movie-search-by-name', {
-        params: { s: this.searchTerm, page: 1 },
+      .get<any>('https://node-backend-7q02.onrender.com/api/movie-search-by-name', {
+        params: { s: this.searchTerm, page: '1' }
       })
       .subscribe({
-        next: (data: any) => {
-          console.log('Success:', data);
-          if (
-            data['Response'] === 'False' &&
-            data['Error'] === 'Too many results.'
-          ) {
+        next: (data) => {
+          if (data['Response'] === 'False' && data['Error'] === 'Too many results.') {
             this.openSnackBar();
-          } else if (
-            data['Response'] === 'True' &&
-            Number(data['totalResults']) > 0
-          ) {
+          } else if (data['Response'] === 'True' && Number(data['totalResults']) > 0) {
             this.moviesList = data['Search'];
             this.totalRecords = Number(data['totalResults']);
             this.showSearchSpinner = false;
@@ -120,20 +148,19 @@ openMovieAddDialog(movie:any) {
         },
         error: (err) => {
           console.error('Error occurred:', err);
-        },
+          this.showSearchSpinner = false;
+        }
       });
   }
-
-  private _snackBar = inject(MatSnackBar);
-
-  durationInSeconds = 5;
-  verticalPosition: MatSnackBarVerticalPosition = 'top';
 
   openSnackBar() {
     this._snackBar.openFromComponent(PizzaPartyComponent, {
       duration: this.durationInSeconds * 1000,
     });
   }
+
+  durationInSeconds = 5;
+  verticalPosition: MatSnackBarVerticalPosition = 'top';
 }
 @Component({
   selector: 'snack-bar-component-example-snack',

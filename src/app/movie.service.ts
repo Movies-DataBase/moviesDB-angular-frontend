@@ -11,4 +11,8 @@ export class MovieService {
   getMovieById(id: string): Observable<any> {
     return this.http.get(`https://node-backend-7q02.onrender.com/api/movie-search-by-id?i=${id}`);
   }
+
+  getMovieCollectionsbyMovieId(id: string): Observable<any> {
+    return this.http.get(`https://node-backend-7q02.onrender.com/api/movieCollectionsList/${id}`);
+  }
 }

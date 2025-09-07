@@ -47,21 +47,48 @@
     </div>
 </div>
 <div *ngIf="isAddMovieModalOpen" (click)="isAddMovieModalOpen = false" class="backdrop"></div>
-<div *ngIf="isAddMovieModalOpen" class="add-movie-modal">
-  <h3 mat-dialog-title>Add Movie to Collection</h3>
+<div *ngIf="isAddMovieModalOpen" class="add-movie-modal" (click)="$event.stopPropagation()">
+  <h3 mat-dialog-title>Add "{{movieInAddPopup?.Title}}" to Collection</h3>
   <mat-dialog-content>
     <p>Collections:</p>
     <table>
       <tr *ngFor="let collection of collectionsList">
-        <td >{{ collection }}</td> <td><input type="checkbox"></td>
+        <td>{{ collection }}</td>
+        <td>
+          <input 
+            type="checkbox"
+            [checked]="selectedCollections.includes(collection)"
+            (change)="onCollectionCheckboxChange(collection, $event)"
+          />
+        </td>
       </tr>
       <tr>
-        <td><input type="text" placeholder="New collection name"></td><td><input type="checkbox"></td>
+        <td>
+          <input 
+            type="text" 
+            [(ngModel)]="newCollectionName" 
+            placeholder="New collection name"
+          />
+        </td>
+        <td>
+          <input 
+            type="checkbox"
+            [disabled]="!newCollectionName?.trim()"
+            [checked]="selectedCollections.includes(newCollectionName)"
+            (change)="onCollectionCheckboxChange(newCollectionName, $event)"
+          />
+        </td>
       </tr>
     </table>
   </mat-dialog-content>
   <mat-dialog-actions>
-    <button class="add-to-collections-button">Add to Selected Collections</button>
-    <button matButton (click)="$event.stopPropagation();isAddMovieModalOpen = false">No Thanks</button>
+    <button 
+      class="add-to-collections-button" 
+      (click)="addToSelectedCollections()"
+      [disabled]="!selectedCollections.length"
+    >
+      Add to Selected Collections
+    </button>
+    <button matButton (click)="isAddMovieModalOpen = false">No Thanks</button>
   </mat-dialog-actions>
 </div>
