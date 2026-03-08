@@ -1,4 +1,4 @@
-import { AsyncPipe, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -13,9 +13,8 @@ import { AuthService } from '../../auth.service';
     MatButtonModule,
     RouterLink,
     RouterModule,
-    AsyncPipe,
-    NgIf,
-  ],
+    AsyncPipe
+],
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css'],
 })

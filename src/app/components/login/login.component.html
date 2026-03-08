@@ -2,8 +2,12 @@
   <form class="auth-card" (ngSubmit)="onSubmit()">
     <h1>Login</h1>
 
-    <p class="info" *ngIf="infoMessage">{{ infoMessage }}</p>
-    <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+    @if (infoMessage) {
+      <p class="info">{{ infoMessage }}</p>
+    }
+    @if (errorMessage) {
+      <p class="error">{{ errorMessage }}</p>
+    }
 
     <label for="username">Username</label>
     <input
@@ -13,25 +17,25 @@
       [(ngModel)]="username"
       placeholder="john"
       required
-    />
+      />
 
-    <label for="password">Password</label>
-    <input
-      id="password"
-      name="password"
-      type="password"
-      [(ngModel)]="password"
-      placeholder="Enter your password"
-      required
-    />
+      <label for="password">Password</label>
+      <input
+        id="password"
+        name="password"
+        type="password"
+        [(ngModel)]="password"
+        placeholder="Enter your password"
+        required
+        />
 
-    <button type="submit" [disabled]="isSubmitting">
-      {{ isSubmitting ? "Logging in..." : "Login" }}
-    </button>
+        <button type="submit" [disabled]="isSubmitting">
+          {{ isSubmitting ? "Logging in..." : "Login" }}
+        </button>
 
-    <p class="switch-link">
-      New user?
-      <a routerLink="/register">Create an account</a>
-    </p>
-  </form>
-</section>
+        <p class="switch-link">
+          New user?
+          <a routerLink="/register">Create an account</a>
+        </p>
+      </form>
+    </section>

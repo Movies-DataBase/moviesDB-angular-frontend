@@ -7,24 +7,30 @@
       [routerLinkActiveOptions]="{ exact: true }"
       routerLink="/"
       >Home</a
-    >
-    <a
-      class="nav-items"
-      routerLinkActive="active-link"
-      [routerLinkActiveOptions]="{ exact: true }"
-      routerLink="/collections"
-      >Collections</a
-    >
-  </div>
-  <span style="margin-left: auto; display: flex; gap: 8px">
-    <button mat-button *ngIf="!(isLoggedIn$ | async)" routerLink="/login">
-      Login
-    </button>
-    <button mat-button *ngIf="!(isLoggedIn$ | async)" routerLink="/register">
-      Sign Up
-    </button>
-    <button mat-button *ngIf="isLoggedIn$ | async" (click)="logout()">
-      Logout
-    </button>
-  </span>
-</mat-toolbar>
+      >
+      <a
+        class="nav-items"
+        routerLinkActive="active-link"
+        [routerLinkActiveOptions]="{ exact: true }"
+        routerLink="/collections"
+        >Collections</a
+        >
+      </div>
+      <span style="margin-left: auto; display: flex; gap: 8px">
+        @if (!(isLoggedIn$ | async)) {
+          <button mat-button routerLink="/login">
+            Login
+          </button>
+        }
+        @if (!(isLoggedIn$ | async)) {
+          <button mat-button routerLink="/register">
+            Sign Up
+          </button>
+        }
+        @if (isLoggedIn$ | async) {
+          <button mat-button (click)="logout()">
+            Logout
+          </button>
+        }
+      </span>
+    </mat-toolbar>

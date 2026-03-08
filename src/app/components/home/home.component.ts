@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
@@ -30,7 +30,6 @@ interface Row {
   standalone: true,
   selector: 'home',
   imports: [
-    CommonModule,
     FormsModule,
     HttpClientModule,
     MatTableModule,
@@ -39,7 +38,7 @@ interface Row {
     CapitalizeFirstPipe,
     MatButtonModule,
     MatDialogModule
-  ],
+],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })

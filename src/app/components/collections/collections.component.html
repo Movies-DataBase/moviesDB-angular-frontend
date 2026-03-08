@@ -2,27 +2,31 @@
   <div class="collection-header">Collections</div>
   <p>Here you can manage your movie collections.</p>
 </div>
-<mat-spinner *ngIf="showSearchSpinner"></mat-spinner>
+@if (showSearchSpinner) {
+  <mat-spinner></mat-spinner>
+}
 
-<div *ngFor="let collection of groupedMovies | keyvalue" class="collection-card">
-  <h2 class="text-xl font-bold mb-2">{{ collection.key }}</h2>
-  
-  <div>
-    <div 
-      *ngFor="let movie of collection.value" 
-      class="movie-card"
-    >
-      <img 
-        [src]="movie.movie_poster_link || 'https://www.content.numetro.co.za/ui_images/no_poster.png'" 
-        alt="{{ movie.movie_name }}" 
-        class="w-full h-40 object-cover rounded"
-      />
-      <div class="mt-2">
-        <h3 class="text-lg font-semibold">{{ movie.movie_name }}</h3>
-        <p class="text-sm text-gray-500">Genre: {{ movie.movie_genre || 'N/A' }}</p>
-        <p class="text-sm text-gray-500">Year: {{ movie.movie_year || 'N/A' }}</p>
-        <p class="text-sm text-gray-500">Type: {{ movie.movie_type || 'N/A' }}</p>
+@for (collection of groupedMovies | keyvalue; track collection) {
+  <div class="collection-card">
+    <h2 class="text-xl font-bold mb-2">{{ collection.key }}</h2>
+    <div>
+      @for (movie of collection.value; track movie) {
+        <div
+          class="movie-card"
+          >
+          <img
+            [src]="movie.movie_poster_link || 'https://www.content.numetro.co.za/ui_images/no_poster.png'"
+            alt="{{ movie.movie_name }}"
+            class="w-full h-40 object-cover rounded"
+            />
+            <div class="mt-2">
+              <h3 class="text-lg font-semibold">{{ movie.movie_name }}</h3>
+              <p class="text-sm text-gray-500">Genre: {{ movie.movie_genre || 'N/A' }}</p>
+              <p class="text-sm text-gray-500">Year: {{ movie.movie_year || 'N/A' }}</p>
+              <p class="text-sm text-gray-500">Type: {{ movie.movie_type || 'N/A' }}</p>
+            </div>
+          </div>
+        }
       </div>
     </div>
-  </div>
-</div>
+  }

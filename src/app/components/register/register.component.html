@@ -2,8 +2,12 @@
   <form class="auth-card" (ngSubmit)="onSubmit()">
     <h1>Create Account</h1>
 
-    <p class="success" *ngIf="successMessage">{{ successMessage }}</p>
-    <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+    @if (successMessage) {
+      <p class="success">{{ successMessage }}</p>
+    }
+    @if (errorMessage) {
+      <p class="error">{{ errorMessage }}</p>
+    }
 
     <label for="username">Username</label>
     <div class="field-row">
@@ -15,95 +19,113 @@
         (ngModelChange)="onUsernameChange($event)"
         placeholder="john"
         required
-      />
-      <span
-        class="status-dot status-available"
-        *ngIf="usernameStatus === 'available'"
-        title="Username is available"
-      ></span>
-      <span
-        class="status-dot status-taken"
-        *ngIf="usernameStatus === 'taken' || usernameStatus === 'invalid'"
-        title="Username is not available"
-      ></span>
-    </div>
-    <p class="hint" *ngIf="usernameStatus === 'checking'">
-      Checking username...
-    </p>
-    <p class="hint success" *ngIf="usernameStatus === 'available'">
-      Username is available.
-    </p>
-    <p class="hint error" *ngIf="usernameStatus === 'taken'">
-      Username already exists.
-    </p>
+        />
+        @if (usernameStatus === 'available') {
+          <span
+            class="status-dot status-available"
+            title="Username is available"
+          ></span>
+        }
+        @if (usernameStatus === 'taken' || usernameStatus === 'invalid') {
+          <span
+            class="status-dot status-taken"
+            title="Username is not available"
+          ></span>
+        }
+      </div>
+      @if (usernameStatus === 'checking') {
+        <p class="hint">
+          Checking username...
+        </p>
+      }
+      @if (usernameStatus === 'available') {
+        <p class="hint success">
+          Username is available.
+        </p>
+      }
+      @if (usernameStatus === 'taken') {
+        <p class="hint error">
+          Username already exists.
+        </p>
+      }
 
-    <label for="email">Email</label>
-    <div class="field-row">
-      <input
-        id="email"
-        name="email"
-        type="email"
-        [(ngModel)]="email"
-        (ngModelChange)="onEmailChange($event)"
-        placeholder="john@example.com"
-        required
-      />
-      <span
-        class="status-dot status-available"
-        *ngIf="emailStatus === 'available'"
-        title="Email is available"
-      ></span>
-      <span
-        class="status-dot status-taken"
-        *ngIf="emailStatus === 'taken' || emailStatus === 'invalid'"
-        title="Email is not available"
-      ></span>
-    </div>
-    <p class="hint" *ngIf="emailStatus === 'checking'">Checking email...</p>
-    <p class="hint success" *ngIf="emailStatus === 'available'">
-      Email is available.
-    </p>
-    <p class="hint error" *ngIf="emailStatus === 'taken'">
-      Email already exists.
-    </p>
-    <p class="hint error" *ngIf="emailStatus === 'invalid'">
-      Enter a valid email format.
-    </p>
+      <label for="email">Email</label>
+      <div class="field-row">
+        <input
+          id="email"
+          name="email"
+          type="email"
+          [(ngModel)]="email"
+          (ngModelChange)="onEmailChange($event)"
+          placeholder="john@example.com"
+          required
+          />
+          @if (emailStatus === 'available') {
+            <span
+              class="status-dot status-available"
+              title="Email is available"
+            ></span>
+          }
+          @if (emailStatus === 'taken' || emailStatus === 'invalid') {
+            <span
+              class="status-dot status-taken"
+              title="Email is not available"
+            ></span>
+          }
+        </div>
+        @if (emailStatus === 'checking') {
+          <p class="hint">Checking email...</p>
+        }
+        @if (emailStatus === 'available') {
+          <p class="hint success">
+            Email is available.
+          </p>
+        }
+        @if (emailStatus === 'taken') {
+          <p class="hint error">
+            Email already exists.
+          </p>
+        }
+        @if (emailStatus === 'invalid') {
+          <p class="hint error">
+            Enter a valid email format.
+          </p>
+        }
 
-    <label for="password">Password</label>
-    <input
-      id="password"
-      name="password"
-      type="password"
-      [(ngModel)]="password"
-      placeholder="Enter password"
-      required
-    />
+        <label for="password">Password</label>
+        <input
+          id="password"
+          name="password"
+          type="password"
+          [(ngModel)]="password"
+          placeholder="Enter password"
+          required
+          />
 
-    <label for="confirmPassword">Confirm Password</label>
-    <input
-      id="confirmPassword"
-      name="confirmPassword"
-      type="password"
-      [(ngModel)]="confirmPassword"
-      placeholder="Confirm password"
-      required
-    />
+          <label for="confirmPassword">Confirm Password</label>
+          <input
+            id="confirmPassword"
+            name="confirmPassword"
+            type="password"
+            [(ngModel)]="confirmPassword"
+            placeholder="Confirm password"
+            required
+            />
 
-    <button
-      type="submit"
+            <button
+              type="submit"
       [disabled]="
         isSubmitting ||
         usernameStatus !== 'available' ||
         emailStatus !== 'available'
       "
-    >
-      {{ isSubmitting ? "Creating..." : "Sign Up" }}
-    </button>
+              >
+              {{ isSubmitting ? "Creating..." : "Sign Up" }}
+            </button>
 
-    <p class="switch-link">
-      Already have an account?
-      <a routerLink="/login">Login</a>
-    </p>
-  </form>
-</section>
+            <p class="switch-link">
+              Already have an account?
+              <a routerLink="/login">Login</a>
+            </p>
+          </form>
+        </section>
