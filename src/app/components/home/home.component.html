@@ -1,141 +1,93 @@
-<div class="main">
-  <form (ngSubmit)="onSubmitSearch()" class="search-form">
-    <input
-      [(ngModel)]="searchTerm"
-      (ngModelChange)="setSearchTerm()"
-      type="text"
-      name="search"
-      id="search-text"
-      class="search-textbox"
-      placeholder="Search Movie Name"
-      />
-      <input type="submit" value="Search" class="search-button" />
+<section class="hero app-page">
+  <div class="hero-copy">
+    <p class="eyebrow">Search across the catalog</p>
+    <h1>Find films fast and save them into clean, organized collections.</h1>
+    <p class="lead">
+      Search by title, review details in a responsive layout, and add anything to one or more collections with a single action.
+    </p>
+    <div class="hero-pills">
+      <span>Mobile friendly</span>
+      <span>Material UI</span>
+      <span>Collection aware</span>
+    </div>
+  </div>
+
+  <mat-card class="search-card">
+    <form class="search-form" (ngSubmit)="onSubmitSearch()">
+      <mat-form-field appearance="outline" floatLabel="always">
+        <mat-label>Search movie title</mat-label>
+        <input
+          matInput
+          [(ngModel)]="searchTerm"
+          (ngModelChange)="setSearchTerm()"
+          type="text"
+          name="search"
+          id="search-text"
+          placeholder="The Dark Knight"
+        />
+      </mat-form-field>
+      <button mat-flat-button color="primary" type="submit">Search</button>
     </form>
-    <div class="movie-table-container">
-      @if (showSearchSpinner) {
-        <mat-spinner></mat-spinner>
-      }
-      @if (showMoviesTable) {
-        <table
-          mat-table
-          [dataSource]="moviesList"
-          class="movies-search-table"
-          >
-          <!--- Note that these columns can be defined in any order.
-          The actual rendered columns are set as a property on the row definition" -->
-          <!-- Position Column -->
-          <ng-container matColumnDef="Poster">
-            <th mat-header-cell *matHeaderCellDef>Poster</th>
-            <td mat-cell *matCellDef="let element">
-              <img
-                class="search-movie-poster"
-                [src]="element.Poster"
-                alt="Movie Poster"
-                />
-              </td>
-            </ng-container>
-            <!-- Name Column -->
-            <ng-container matColumnDef="Title">
-              <th mat-header-cell *matHeaderCellDef>Title</th>
-              <td mat-cell *matCellDef="let element">{{ element.Title }}</td>
-            </ng-container>
-            <!-- Weight Column -->
-            <ng-container matColumnDef="Year">
-              <th mat-header-cell *matHeaderCellDef>Year</th>
-              <td mat-cell *matCellDef="let element">
-                {{ element.Year | removeTrailingDashes }}
-              </td>
-            </ng-container>
-            <!-- Symbol Column -->
-            <ng-container matColumnDef="Type">
-              <th mat-header-cell *matHeaderCellDef>Type</th>
-              <td mat-cell *matCellDef="let element">
-                {{ element.Type | capitalizeFirst }}
-              </td>
-            </ng-container>
-            <!-- Symbol Column -->
-            <ng-container matColumnDef="Action">
-              <th mat-header-cell *matHeaderCellDef></th>
-              <td mat-cell *matCellDef="let element">
-                <svg
-                  class="add-icon"
-                  (click)="$event.stopPropagation(); addToCollection(element)"
-                  height="24px"
-                  viewBox="0 -960 960 960"
-                  width="24px"
-                  >
-                  <path
-                    d="M440-280h80v-160h160v-80H520v-160h-80v160H280v80h160v160ZM200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm0-80h560v-560H200v560Zm0-560v560-560Z"
-                    />
-                  </svg>
-                </td>
-              </ng-container>
-              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-              <tr
-                class="movie-row"
-                (click)="goToMovie(row)"
-                mat-row
-                *matRowDef="let row; columns: displayedColumns"
-              ></tr>
-            </table>
-          }
-        </div>
+
+    <div class="search-metrics">
+      <div>
+        <strong>{{ totalRecords || '0' }}</strong>
+        <span>results found</span>
       </div>
-      @if (isAddMovieModalOpen) {
-        <div
-          (click)="isAddMovieModalOpen = false"
-          class="backdrop"
-        ></div>
+      <div>
+        <strong>1</strong>
+        <span>page loaded</span>
+      </div>
+    </div>
+  </mat-card>
+</section>
+
+<section class="results app-page">
+  @if (showSearchSpinner) {
+    <div class="spinner-wrap">
+      <mat-spinner diameter="56"></mat-spinner>
+      <p>Finding matches...</p>
+    </div>
+  }
+
+  @if (showMoviesTable) {
+    <div class="results-header">
+      <div>
+        <p class="eyebrow">Search results</p>
+        <h2>{{ totalRecords }} titles</h2>
+      </div>
+    </div>
+
+    <div class="movie-grid">
+      @for (movie of moviesList; track movie.imdbID) {
+        <mat-card class="movie-card" (click)="goToMovie(movie)">
+          <div class="poster-wrap">
+            <img
+              class="search-movie-poster"
+              [src]="movie.Poster && movie.Poster !== 'N/A' ? movie.Poster : 'https://www.content.numetro.co.za/ui_images/no_poster.png'"
+              [alt]="movie.Title"
+            />
+          </div>
+          <div class="movie-body">
+            <h3>{{ movie.Title }}</h3>
+            <p>{{ movie.Year }} / {{ movie.Type }}</p>
+          </div>
+          <div class="movie-actions">
+            <button
+              mat-stroked-button
+              type="button"
+              (click)="$event.stopPropagation(); addToCollection(movie)"
+            >
+              Add to collection
+            </button>
+          </div>
+        </mat-card>
       }
-      @if (isAddMovieModalOpen) {
-        <div
-          class="add-movie-modal"
-          (click)="$event.stopPropagation()"
-          >
-          <h3 mat-dialog-title>Add "{{ movieInAddPopup?.Title }}" to Collection</h3>
-          <mat-dialog-content>
-            <p>Collections:</p>
-            <table>
-              @for (collection of collectionsList; track collection) {
-                <tr>
-                  <td>{{ collection }}</td>
-                  <td>
-                    <input
-                      type="checkbox"
-                      [checked]="selectedCollections.includes(collection)"
-                      (change)="onCollectionCheckboxChange(collection, $event)"
-                      />
-                    </td>
-                  </tr>
-                }
-                <tr>
-                  <td>
-                    <input
-                      type="text"
-                      [(ngModel)]="newCollectionName"
-                      placeholder="New collection name"
-                      />
-                    </td>
-                    <td>
-                      <input
-                        type="checkbox"
-                        [disabled]="!newCollectionName.trim()"
-                        [checked]="selectedCollections.includes(newCollectionName)"
-                        (change)="onCollectionCheckboxChange(newCollectionName, $event)"
-                        />
-                      </td>
-                    </tr>
-                  </table>
-                </mat-dialog-content>
-                <mat-dialog-actions>
-                  <button
-                    class="add-to-collections-button"
-                    (click)="addToSelectedCollections()"
-                    [disabled]="!selectedCollections.length"
-                    >
-                    Add to Selected Collections
-                  </button>
-                  <button matButton (click)="isAddMovieModalOpen = false">No Thanks</button>
-                </mat-dialog-actions>
-              </div>
-            }
+    </div>
+  } @else if (!showSearchSpinner && searchTerm.trim()) {
+    <mat-card class="empty-state">
+      <h3>No results yet</h3>
+      <p>Run a search to see matching movies here.</p>
+    </mat-card>
+  }
+</section>

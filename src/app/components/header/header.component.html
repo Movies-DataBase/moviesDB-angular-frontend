@@ -1,37 +1,72 @@
-<mat-toolbar color="primary" style="background-color: #1877f2; color: #fff">
-  <span style="font-size: 1.5rem; font-weight: bold">MoviesDB</span>
-  <div class="nav-container">
+<mat-toolbar class="topbar">
+  <a class="brand" routerLink="/">
+    <span class="brand-mark">MDB</span>
+    <span class="brand-text">
+      <strong>MoviesDB</strong>
+      <small>Discover. Collect. Revisit.</small>
+    </span>
+  </a>
+
+  <nav class="primary-nav" aria-label="Primary navigation">
     <a
-      class="nav-items"
+      mat-button
+      routerLink="/"
       routerLinkActive="active-link"
       [routerLinkActiveOptions]="{ exact: true }"
-      routerLink="/"
-      >Home</a
-      >
-      <a
-  class="nav-items"
-  routerLinkActive="active-link"
-  [routerLinkActiveOptions]="{ exact: true }"
-  [routerLink]="getCollectionsLink(currentUser$ | async)"
->
-  Collections
-</a>
-      </div>
-      <span style="margin-left: auto; display: flex; gap: 8px">
-        @if (!(isLoggedIn$ | async)) {
-          <button mat-button routerLink="/login">
-            Login
-          </button>
-        }
-        @if (!(isLoggedIn$ | async)) {
-          <button mat-button routerLink="/register">
-            Sign Up
-          </button>
-        }
-        @if (isLoggedIn$ | async) {
-          <button mat-button (click)="logout()">
-            Logout
-          </button>
-        }
-      </span>
-    </mat-toolbar>
+    >
+      Home
+    </a>
+    <a
+      mat-button
+      [routerLink]="getCollectionsLink(currentUser$ | async)"
+      routerLinkActive="active-link"
+    >
+      Collections
+    </a>
+  </nav>
+
+  <span class="spacer"></span>
+
+  @if (currentUser$ | async; as user) {
+    <div class="user-chip">
+      <span class="user-label">Signed in</span>
+      <strong>{{ user.username }}</strong>
+    </div>
+  }
+
+  <div class="auth-actions desktop-actions">
+    @if (!(isLoggedIn$ | async)) {
+      <a mat-stroked-button routerLink="/login">Login</a>
+      <a mat-flat-button color="primary" routerLink="/register">Sign up</a>
+    }
+    @if (isLoggedIn$ | async) {
+      <button mat-flat-button color="primary" (click)="logout()">Logout</button>
+    }
+  </div>
+
+  <button
+    mat-stroked-button
+    class="menu-button"
+    [matMenuTriggerFor]="navMenu"
+    aria-label="Open navigation menu"
+  >
+    Menu
+  </button>
+
+  <mat-menu #navMenu="matMenu">
+    <a mat-menu-item routerLink="/">Home</a>
+    <a
+      mat-menu-item
+      [routerLink]="getCollectionsLink(currentUser$ | async)"
+    >
+      Collections
+    </a>
+    @if (!(isLoggedIn$ | async)) {
+      <a mat-menu-item routerLink="/login">Login</a>
+      <a mat-menu-item routerLink="/register">Sign up</a>
+    }
+    @if (isLoggedIn$ | async) {
+      <button mat-menu-item (click)="logout()">Logout</button>
+    }
+  </mat-menu>
+</mat-toolbar>

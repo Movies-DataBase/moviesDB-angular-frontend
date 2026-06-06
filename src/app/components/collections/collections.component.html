@@ -1,32 +1,75 @@
-<div class="collection-heading">
-  <div class="collection-header">Collections</div>
-  <p>Here you can manage your movie collections.</p>
-</div>
-@if (showSearchSpinner) {
-  <mat-spinner></mat-spinner>
-}
-
-@for (collection of groupedMovies | keyvalue; track collection) {
-  <div class="collection-card">
-    <h2 class="text-xl font-bold mb-2">{{ collection.key }}</h2>
+<section class="collections-page app-page">
+  <div class="collections-hero">
     <div>
-      @for (movie of collection.value; track movie) {
-        <div
-          class="movie-card"
-          >
-          <img
-            [src]="movie.movie_poster_link || 'https://www.content.numetro.co.za/ui_images/no_poster.png'"
-            alt="{{ movie.movie_name }}"
-            class="w-full h-40 object-cover rounded"
-            />
-            <div class="mt-2">
-              <h3 class="text-lg font-semibold">{{ movie.movie_name }}</h3>
-              <p class="text-sm text-gray-500">Genre: {{ movie.movie_genre || 'N/A' }}</p>
-              <p class="text-sm text-gray-500">Year: {{ movie.movie_year || 'N/A' }}</p>
-              <p class="text-sm text-gray-500">Type: {{ movie.movie_type || 'N/A' }}</p>
-            </div>
-          </div>
-        }
+      <p class="eyebrow">Your library</p>
+      <h1>Collections that stay readable, organized, and easy to scan.</h1>
+      <p>
+        Browse everything by collection name, jump between groups quickly, and keep the layout usable on phones without losing context.
+      </p>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <strong>{{ collectionCount }}</strong>
+        <span>collections</span>
+      </div>
+      <div class="hero-stat">
+        <strong>{{ totalMovieCount }}</strong>
+        <span>saved movies</span>
       </div>
     </div>
+  </div>
+
+  @if (showSearchSpinner) {
+    <div class="spinner-wrap">
+      <mat-spinner diameter="56"></mat-spinner>
+      <p>Loading collections...</p>
+    </div>
   }
+
+  @if (!showSearchSpinner && collectionEntries.length === 0) {
+    <mat-card class="empty-state">
+      <h2>No collections yet</h2>
+      <p>Search for a movie from the home page and add it to a collection to populate this view.</p>
+    </mat-card>
+  }
+
+  @if (!showSearchSpinner && collectionEntries.length > 0) {
+    <div class="collection-overview" aria-label="Collection overview">
+      @for (entry of collectionEntries; track entry.name) {
+        <div class="overview-card">
+          <strong>{{ entry.name }}</strong>
+          <span>{{ entry.movies.length }} movie{{ entry.movies.length === 1 ? '' : 's' }}</span>
+        </div>
+      }
+    </div>
+
+    <mat-accordion multi class="collections-list">
+      @for (entry of collectionEntries; track entry.name) {
+        <mat-expansion-panel class="collection-panel" [expanded]="true">
+          <mat-expansion-panel-header>
+            <mat-panel-title>{{ entry.name }}</mat-panel-title>
+            <mat-panel-description>
+              {{ entry.movies.length }} movie{{ entry.movies.length === 1 ? '' : 's' }}
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+
+          <div class="movie-grid">
+            @for (movie of entry.movies; track movie.movie_name + '-' + movie.imdb_id) {
+              <mat-card class="movie-card">
+                <img
+                  [src]="movie.movie_poster_link || 'https://www.content.numetro.co.za/ui_images/no_poster.png'"
+                  [alt]="movie.movie_name"
+                />
+                <div class="movie-info">
+                  <h3>{{ movie.movie_name }}</h3>
+                  <p>{{ movie.movie_year || 'N/A' }} / {{ movie.movie_type || 'N/A' }}</p>
+                  <span>{{ movie.movie_genre || 'Genre unavailable' }}</span>
+                </div>
+              </mat-card>
+            }
+          </div>
+        </mat-expansion-panel>
+      }
+    </mat-accordion>
+  }
+</section>

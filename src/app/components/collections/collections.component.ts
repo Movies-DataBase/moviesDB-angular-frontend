@@ -1,15 +1,15 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { KeyValuePipe } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { MatTableModule } from '@angular/material/table';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { environment } from '../../../environments/environment';
+import { Component, OnInit, inject } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MatCardModule } from '@angular/material/card';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import {
   MatSnackBar,
   MatSnackBarVerticalPosition,
 } from '@angular/material/snack-bar';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { ActivatedRoute } from '@angular/router';
+import { environment } from '../../../environments/environment';
 import { AuthService } from '../../auth.service';
 
 @Component({
@@ -17,70 +17,88 @@ import { AuthService } from '../../auth.service';
   selector: 'home',
   imports: [
     FormsModule,
-    KeyValuePipe,
     HttpClientModule,
-    MatTableModule,
+    MatCardModule,
+    MatExpansionModule,
     MatProgressSpinnerModule,
   ],
   templateUrl: './collections.component.html',
   styleUrls: ['./collections.component.css'],
 })
 export class CollectionsComponent implements OnInit {
-  showSearchSpinner: boolean = false;
-  userId: string = '1111';
-  collectionsList: any;
-  groupedMovies: { [collection: string]: any[] } = {};
-
-  constructor(private http: HttpClient, private route: ActivatedRoute, private authService: AuthService) {}
-
-  ngOnInit(): void {
-
-    this.showSearchSpinner = true;
-        const username = this.route.snapshot.paramMap.get('username');
-        this.userId = username || '1111';
-
-        if (username) {
-          this.authService.saveData(username);
-        }
-    this.http
-      .get(`${environment.nodeServerUrl}api/userCollectionDetails/${this.userId}`, {})
-      .subscribe({
-        next: (data: any) => {
-          this.groupedMovies = this.groupByCollection(data.rows);
-          this.showSearchSpinner = false;
-        },
-        error: (err) => {
-          console.error('Error occurred:', err);
-        },
-      });
-  }
-  groupByCollection(rows: any[]): { [collection: string]: any[] } {
-    const grouped: { [collection: string]: any[] } = {};
-    for (const row of rows) {
-      const collection = row.collection_name || 'Uncategorized';
-      if (!grouped[collection]) {
-        grouped[collection] = [];
-      }
-      grouped[collection].push(row);
-    }
-    return grouped;
-  }
+  showSearchSpinner = false;
+  userId = '1111';
+  collectionEntries: { name: string; movies: any[] }[] = [];
+  collectionCount = 0;
+  totalMovieCount = 0;
 
   private _snackBar = inject(MatSnackBar);
 
   durationInSeconds = 5;
   verticalPosition: MatSnackBarVerticalPosition = 'top';
 
-  openSnackBar() {
+  constructor(
+    private http: HttpClient,
+    private route: ActivatedRoute,
+    private authService: AuthService,
+  ) {}
+
+  ngOnInit(): void {
+    this.showSearchSpinner = true;
+    const username = this.route.snapshot.paramMap.get('username');
+    this.userId = username || '1111';
+
+    if (username) {
+      this.authService.saveData(username);
+    }
+
+    this.http
+      .get(`${environment.nodeServerUrl}api/userCollectionDetails/${this.userId}`)
+      .subscribe({
+        next: (data: any) => {
+          this.collectionEntries = this.buildCollectionEntries(data.rows || []);
+          this.collectionCount = this.collectionEntries.length;
+          this.totalMovieCount = this.collectionEntries.reduce(
+            (count, entry) => count + entry.movies.length,
+            0,
+          );
+          this.showSearchSpinner = false;
+        },
+        error: (err) => {
+          console.error('Error occurred:', err);
+          this.showSearchSpinner = false;
+        },
+      });
+  }
+
+  openSnackBar(): void {
     this._snackBar.openFromComponent(PizzaPartyComponent, {
       duration: this.durationInSeconds * 1000,
     });
   }
+
+  private buildCollectionEntries(rows: any[]): { name: string; movies: any[] }[] {
+    const grouped = new Map<string, any[]>();
+
+    for (const row of rows) {
+      const collection = (row.collection_name || 'Uncategorized').trim();
+      if (!grouped.has(collection)) {
+        grouped.set(collection, []);
+      }
+      grouped.get(collection)?.push(row);
+    }
+
+    return Array.from(grouped.entries())
+      .map(([name, movies]) => ({ name, movies }))
+      .sort((left, right) => left.name.localeCompare(right.name));
+  }
 }
+
 @Component({
   selector: 'snack-bar-component-example-snack',
+  standalone: true,
   template:
-    '<span class="example-pizza-party">Too Many Results, Can you be more specific? 🤔</span>',
+    '<span class="example-pizza-party">Too many results. Try a more specific search.</span>',
   styles: `
     .example-pizza-party {
       color: white;

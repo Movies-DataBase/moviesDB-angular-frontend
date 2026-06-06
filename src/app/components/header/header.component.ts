@@ -1,16 +1,18 @@
 import { AsyncPipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { Router, RouterLink, RouterModule } from '@angular/router';
 import { AuthService } from '../../auth.service';
 
 @Component({
-  selector: 'header',
+  selector: 'app-header',
   standalone: true,
   imports: [
     MatToolbarModule,
     MatButtonModule,
+    MatMenuModule,
     RouterLink,
     RouterModule,
     AsyncPipe,
@@ -29,9 +31,8 @@ export class HeaderComponent {
     this.isLoggedIn$ = this.authService.isLoggedIn$;
     this.currentUser$ = this.authService.currentUser$;
   }
-  
+
   getCollectionsLink(user: any): string {
-    console.log('Current user in header:', user);
     return user?.username ? `/collections/${user.username}` : '/login';
   }
 

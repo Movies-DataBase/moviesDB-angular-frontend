@@ -1,10 +1,71 @@
-<img [src]="movieDetails?.['Poster']" [alt]="movieDetails?.['Title']" class="poster" style="height: 5cm;">
+<section class="movie-page app-page">
+  @if (isLoading) {
+    <div class="spinner-wrap">
+      <mat-spinner diameter="56"></mat-spinner>
+      <p>Loading movie details...</p>
+    </div>
+  }
 
-<div>{{ movieDetails?.['Title'] }}</div>
-<div>{{ movieDetails?.['Released'] }}</div>
-<div>{{ movieDetails?.['Genre'] }}</div>
-<div>{{ movieDetails?.['Ratings'][0]['Value'] }}</div>
-<div>{{ movieDetails?.['Ratings'][1]['Value'] }}</div>
-<div>{{ movieDetails?.['Type'] }}</div>
-<div>{{ movieDetails?.['Language'] }}</div>
-<div>{{ movieDetails?.['Plot'] }}</div>
+  @if (!isLoading && movieDetails) {
+    <div class="movie-layout">
+      <mat-card class="poster-card">
+        <img
+          [src]="movieDetails?.['Poster'] && movieDetails?.['Poster'] !== 'N/A' ? movieDetails?.['Poster'] : 'https://www.content.numetro.co.za/ui_images/no_poster.png'"
+          [alt]="movieDetails?.['Title']"
+        />
+      </mat-card>
+
+      <mat-card class="details-card">
+        <p class="eyebrow">Movie details</p>
+        <h1>{{ movieDetails?.['Title'] }}</h1>
+
+        <div class="meta-row">
+          <span>{{ movieDetails?.['Released'] }}</span>
+          <span>{{ movieDetails?.['Runtime'] }}</span>
+          <span>{{ movieDetails?.['Type'] }}</span>
+          <span>{{ movieDetails?.['Language'] }}</span>
+        </div>
+
+        <p class="plot">
+          {{ movieDetails?.['Plot'] }}
+        </p>
+
+        <mat-divider></mat-divider>
+
+        <div class="info-grid">
+          <div>
+            <span>Genre</span>
+            <strong>{{ movieDetails?.['Genre'] }}</strong>
+          </div>
+          <div>
+            <span>Director</span>
+            <strong>{{ movieDetails?.['Director'] || 'N/A' }}</strong>
+          </div>
+          <div>
+            <span>Writer</span>
+            <strong>{{ movieDetails?.['Writer'] || 'N/A' }}</strong>
+          </div>
+          <div>
+            <span>Actors</span>
+            <strong>{{ movieDetails?.['Actors'] || 'N/A' }}</strong>
+          </div>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <div class="ratings-section">
+          <div class="section-title">Ratings</div>
+          <mat-chip-set>
+            @for (rating of movieDetails?.['Ratings'] || []; track rating.Source) {
+              <mat-chip>{{ rating.Source }}: {{ rating.Value }}</mat-chip>
+            }
+          </mat-chip-set>
+        </div>
+
+        <div class="actions">
+          <a mat-stroked-button routerLink="/">Back to search</a>
+        </div>
+      </mat-card>
+    </div>
+  }
+</section>

@@ -1,0 +1,147 @@
+.movie-page {
+  display: grid;
+}
+
+.movie-layout {
+  display: grid;
+  grid-template-columns: minmax(260px, 360px) minmax(0, 1fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+.poster-card,
+.details-card,
+.spinner-wrap {
+  border-radius: 1.3rem;
+  border: 1px solid #cddce0;
+  box-shadow: 0 18px 36px rgba(10, 45, 66, 0.08);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(14px);
+}
+
+.poster-card {
+  padding: 0.9rem;
+}
+
+.poster-card img {
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  border-radius: 1rem;
+  background: linear-gradient(135deg, #d5e7e9, #edf5f6);
+}
+
+.details-card {
+  padding: 1.4rem;
+  display: grid;
+  gap: 1rem;
+}
+
+.eyebrow {
+  margin: 0;
+  color: #0f766e;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 800;
+}
+
+.details-card h1 {
+  margin: 0;
+  font-size: clamp(2rem, 4vw, 3.4rem);
+  line-height: 0.98;
+  letter-spacing: -0.05em;
+  color: #123242;
+}
+
+.meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.meta-row span {
+  padding: 0.55rem 0.8rem;
+  border-radius: 999px;
+  background: #edf5f6;
+  color: #244454;
+  border: 1px solid #d1dde0;
+  font-size: 0.9rem;
+}
+
+.plot {
+  margin: 0;
+  color: #49636f;
+  line-height: 1.8;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem;
+}
+
+.info-grid div {
+  display: grid;
+  gap: 0.3rem;
+  padding: 0.9rem 1rem;
+  border-radius: 1rem;
+  background: #edf5f6;
+  border: 1px solid #d1dde0;
+}
+
+.info-grid span,
+.section-title {
+  color: #49636f;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.info-grid strong {
+  color: #123242;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.ratings-section {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.spinner-wrap {
+  display: grid;
+  place-items: center;
+  gap: 0.75rem;
+  padding: 2rem;
+}
+
+.spinner-wrap p {
+  margin: 0;
+  color: #49636f;
+}
+
+@media (max-width: 860px) {
+  .movie-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .details-card {
+    padding: 1rem;
+  }
+
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .actions a {
+    width: 100%;
+  }
+}

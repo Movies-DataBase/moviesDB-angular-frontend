@@ -1,131 +1,122 @@
-<section class="auth-shell">
-  <form class="auth-card" (ngSubmit)="onSubmit()">
-    <h1>Create Account</h1>
+<section class="auth-shell app-page">
+  <div class="auth-layout">
+    <div class="auth-copy">
+      <p class="eyebrow">Join the library</p>
+      <h1>Create an account and start building your collection space.</h1>
+      <p>
+        Make a profile, verify your details, and keep your saved movies organized in a cleaner interface built for every device size.
+      </p>
+      <ul>
+        <li>Live username and email checks</li>
+        <li>Material text fields with clear states</li>
+        <li>Simple, polished sign-up flow</li>
+      </ul>
+    </div>
 
-    @if (successMessage) {
-      <p class="success">{{ successMessage }}</p>
-    }
-    @if (errorMessage) {
-      <p class="error">{{ errorMessage }}</p>
-    }
+    <mat-card class="auth-card">
+      <h2>Create Account</h2>
 
-    <label for="username">Username</label>
-    <div class="field-row">
-      <input
-        id="username"
-        name="username"
-        type="text"
-        [(ngModel)]="username"
-        (ngModelChange)="onUsernameChange($event)"
-        placeholder="john"
-        required
-        />
-        @if (usernameStatus === 'available') {
-          <span
-            class="status-dot status-available"
-            title="Username is available"
-          ></span>
-        }
-        @if (usernameStatus === 'taken' || usernameStatus === 'invalid') {
-          <span
-            class="status-dot status-taken"
-            title="Username is not available"
-          ></span>
-        }
-      </div>
-      @if (usernameStatus === 'checking') {
-        <p class="hint">
-          Checking username...
-        </p>
+      @if (successMessage) {
+        <p class="success">{{ successMessage }}</p>
       }
-      @if (usernameStatus === 'available') {
-        <p class="hint success">
-          Username is available.
-        </p>
-      }
-      @if (usernameStatus === 'taken') {
-        <p class="hint error">
-          Username already exists.
-        </p>
+      @if (errorMessage) {
+        <p class="error">{{ errorMessage }}</p>
       }
 
-      <label for="email">Email</label>
-      <div class="field-row">
-        <input
-          id="email"
-          name="email"
-          type="email"
-          [(ngModel)]="email"
-          (ngModelChange)="onEmailChange($event)"
-          placeholder="john@example.com"
-          required
+      <form class="auth-form" (ngSubmit)="onSubmit()">
+        <mat-form-field appearance="outline">
+          <mat-label>Username</mat-label>
+          <input
+            matInput
+            id="username"
+            name="username"
+            type="text"
+            [(ngModel)]="username"
+            (ngModelChange)="onUsernameChange($event)"
+            placeholder="john"
+            required
           />
-          @if (emailStatus === 'available') {
-            <span
-              class="status-dot status-available"
-              title="Email is available"
-            ></span>
-          }
-          @if (emailStatus === 'taken' || emailStatus === 'invalid') {
-            <span
-              class="status-dot status-taken"
-              title="Email is not available"
-            ></span>
-          }
-        </div>
+        </mat-form-field>
+        @if (usernameStatus === 'checking') {
+          <p class="hint">Checking username...</p>
+        }
+        @if (usernameStatus === 'available') {
+          <p class="hint success">Username is available.</p>
+        }
+        @if (usernameStatus === 'taken') {
+          <p class="hint error">Username already exists.</p>
+        }
+
+        <mat-form-field appearance="outline">
+          <mat-label>Email</mat-label>
+          <input
+            matInput
+            id="email"
+            name="email"
+            type="email"
+            [(ngModel)]="email"
+            (ngModelChange)="onEmailChange($event)"
+            placeholder="john@example.com"
+            required
+          />
+        </mat-form-field>
         @if (emailStatus === 'checking') {
           <p class="hint">Checking email...</p>
         }
         @if (emailStatus === 'available') {
-          <p class="hint success">
-            Email is available.
-          </p>
+          <p class="hint success">Email is available.</p>
         }
         @if (emailStatus === 'taken') {
-          <p class="hint error">
-            Email already exists.
-          </p>
+          <p class="hint error">Email already exists.</p>
         }
         @if (emailStatus === 'invalid') {
-          <p class="hint error">
-            Enter a valid email format.
-          </p>
+          <p class="hint error">Enter a valid email format.</p>
         }
 
-        <label for="password">Password</label>
-        <input
-          id="password"
-          name="password"
-          type="password"
-          [(ngModel)]="password"
-          placeholder="Enter password"
-          required
-          />
-
-          <label for="confirmPassword">Confirm Password</label>
+        <mat-form-field appearance="outline">
+          <mat-label>Password</mat-label>
           <input
+            matInput
+            id="password"
+            name="password"
+            type="password"
+            [(ngModel)]="password"
+            placeholder="Enter password"
+            required
+          />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Confirm password</mat-label>
+          <input
+            matInput
             id="confirmPassword"
             name="confirmPassword"
             type="password"
             [(ngModel)]="confirmPassword"
             placeholder="Confirm password"
             required
-            />
+          />
+        </mat-form-field>
 
-            <button
-              type="submit"
-      [disabled]="
-        isSubmitting ||
-        usernameStatus !== 'available' ||
-        emailStatus !== 'available'
-      "
-              >
-              {{ isSubmitting ? "Creating..." : "Sign Up" }}
-            </button>
+        <button
+          mat-flat-button
+          color="primary"
+          type="submit"
+          [disabled]="
+            isSubmitting ||
+            usernameStatus !== 'available' ||
+            emailStatus !== 'available'
+          "
+        >
+          {{ isSubmitting ? 'Creating...' : 'Sign Up' }}
+        </button>
+      </form>
 
-            <p class="switch-link">
-              Already have an account?
-              <a routerLink="/login">Login</a>
-            </p>
-          </form>
-        </section>
+      <p class="switch-link">
+        Already have an account?
+        <a routerLink="/login">Login</a>
+      </p>
+    </mat-card>
+  </div>
+</section>

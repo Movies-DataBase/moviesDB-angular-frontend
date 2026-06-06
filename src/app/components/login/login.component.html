@@ -1,41 +1,64 @@
-<section class="auth-shell">
-  <form class="auth-card" (ngSubmit)="onSubmit()">
-    <h1>Login</h1>
+<section class="auth-shell app-page">
+  <div class="auth-layout">
+    <div class="auth-copy">
+      <p class="eyebrow">Welcome back</p>
+      <h1>Sign in and keep your movie collections close.</h1>
+      <p>
+        Pick up where you left off, search for new titles, and manage your saved movies from a polished dashboard.
+      </p>
+      <ul>
+        <li>Responsive across phone, tablet, and desktop</li>
+        <li>Built with Angular Material inputs and actions</li>
+        <li>Fast access to collections after login</li>
+      </ul>
+    </div>
 
-    @if (infoMessage) {
-      <p class="info">{{ infoMessage }}</p>
-    }
-    @if (errorMessage) {
-      <p class="error">{{ errorMessage }}</p>
-    }
+    <mat-card class="auth-card">
+      <h2>Login</h2>
 
-    <label for="username">Username</label>
-    <input
-      id="username"
-      name="username"
-      type="text"
-      [(ngModel)]="username"
-      placeholder="john"
-      required
-      />
+      @if (infoMessage) {
+        <p class="info">{{ infoMessage }}</p>
+      }
+      @if (errorMessage) {
+        <p class="error">{{ errorMessage }}</p>
+      }
 
-      <label for="password">Password</label>
-      <input
-        id="password"
-        name="password"
-        type="password"
-        [(ngModel)]="password"
-        placeholder="Enter your password"
-        required
-        />
+      <form (ngSubmit)="onSubmit()" class="auth-form">
+        <mat-form-field appearance="outline">
+          <mat-label>Username</mat-label>
+          <input
+            matInput
+            id="username"
+            name="username"
+            type="text"
+            [(ngModel)]="username"
+            placeholder="john"
+            required
+          />
+        </mat-form-field>
 
-        <button type="submit" [disabled]="isSubmitting">
-          {{ isSubmitting ? "Logging in..." : "Login" }}
+        <mat-form-field appearance="outline">
+          <mat-label>Password</mat-label>
+          <input
+            matInput
+            id="password"
+            name="password"
+            type="password"
+            [(ngModel)]="password"
+            placeholder="Enter your password"
+            required
+          />
+        </mat-form-field>
+
+        <button mat-flat-button color="primary" type="submit" [disabled]="isSubmitting">
+          {{ isSubmitting ? 'Logging in...' : 'Login' }}
         </button>
-
-        <p class="switch-link">
-          New user?
-          <a routerLink="/register">Create an account</a>
-        </p>
       </form>
-    </section>
+
+      <p class="switch-link">
+        New user?
+        <a routerLink="/register">Create an account</a>
+      </p>
+    </mat-card>
+  </div>
+</section>
