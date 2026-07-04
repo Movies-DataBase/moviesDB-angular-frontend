@@ -1,8 +1,8 @@
 .hero {
   display: grid;
-  grid-template-columns: minmax(0, 1.12fr) minmax(320px, 0.88fr);
   gap: 1rem;
   align-items: stretch;
+  grid-auto-flow: row;
 }
 
 .hero-copy,
@@ -29,14 +29,12 @@
 
 .hero h1 {
   margin: 0;
-  max-width: 12ch;
   font-size: clamp(2.3rem, 5vw, 4.35rem);
   line-height: 0.96;
   letter-spacing: -0.05em;
 }
 
 .lead {
-  max-width: 60ch;
   margin: 1rem 0 0;
   color: #3f5965;
   font-size: 1.03rem;
@@ -47,11 +45,11 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.55rem;
-  margin-top: 1.25rem;
+  margin-top: 1rem;
 }
 
 .hero-pills span {
-  padding: 0.6rem 0.85rem;
+  padding: 0.2rem 0.7rem 0.2rem 0.7rem;
   border-radius: 999px;
   background: rgba(15, 118, 110, 0.1);
   color: #164050;
@@ -70,7 +68,10 @@
 
 .search-form {
   display: grid;
-  gap: 0.9rem;
+  gap: 1rem;
+  grid-auto-flow: column;
+  place-items: center;
+  grid-template-columns: 80% 18%;
 }
 
 .search-form mat-form-field,

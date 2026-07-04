@@ -1,21 +1,21 @@
 <section class="hero app-page">
   <div class="hero-copy">
-    <p class="eyebrow">Search across the catalog</p>
-    <h1>Find films fast and save them into clean, organized collections.</h1>
+    <p class="eyebrow">Search titles</p>
+    <h1>Find Films and Shows</h1>
     <p class="lead">
       Search by title, review details in a responsive layout, and add anything to one or more collections with a single action.
     </p>
     <div class="hero-pills">
-      <span>Mobile friendly</span>
-      <span>Material UI</span>
-      <span>Collection aware</span>
+      <span>Search Movies</span>
+      <span>Add to Collections</span>
+      <span>View or Share Collections with Friends</span>
     </div>
   </div>
 
   <mat-card class="search-card">
     <form class="search-form" (ngSubmit)="onSubmitSearch()">
       <mat-form-field appearance="outline" floatLabel="always">
-        <mat-label>Search movie title</mat-label>
+        <mat-label>Search title</mat-label>
         <input
           matInput
           [(ngModel)]="searchTerm"
@@ -28,17 +28,6 @@
       </mat-form-field>
       <button mat-flat-button color="primary" type="submit">Search</button>
     </form>
-
-    <div class="search-metrics">
-      <div>
-        <strong>{{ totalRecords || '0' }}</strong>
-        <span>results found</span>
-      </div>
-      <div>
-        <strong>1</strong>
-        <span>page loaded</span>
-      </div>
-    </div>
   </mat-card>
 </section>
 
