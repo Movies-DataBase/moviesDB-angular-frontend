@@ -7,8 +7,9 @@
     </span>
   </a>
 
-  <nav class="primary-nav" aria-label="Primary navigation">
-    <a
+  @if(getURL() !== '/login' && getURL() !== '/register') {
+    <nav class="primary-nav" aria-label="Primary navigation">
+      <a
       mat-button
       routerLink="/"
       routerLinkActive="active-link"
@@ -24,6 +25,7 @@
       Collections
     </a>
   </nav>
+  }
 
   <span class="spacer"></span>
 

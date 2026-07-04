@@ -1,5 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
 
+@font-face {
+  font-family: "PrimeSans";
+  src: url("./assets/SFRegular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+
 :root {
   --app-bg-top: #f8fcfb;
   --app-bg-bottom: #e8f0f2;
@@ -19,9 +26,13 @@ body {
   height: 100%;
 }
 
+*{
+  font-family: "Segoe UI", "Trebuchet MS", "PrimeSans", sans-serif !important;
+}
+
 body {
   margin: 0;
-  font-family: "Manrope", "Inter", "Segoe UI Variable", "Segoe UI", sans-serif;
+  font-family: "Segoe UI", "Trebuchet MS", "PrimeSans", sans-serif;
   color: var(--text-main);
   background:
     radial-gradient(circle at top left, rgba(15, 118, 110, 0.14), transparent 28%),

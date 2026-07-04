@@ -4,6 +4,17 @@
   min-height: 100vh;
 }
 
+
+@font-face {
+  font-family: "PrimeSans";
+  src: url("../assets/SFRegular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+body{
+  font-family: "Segoe UI", "Trebuchet MS", "PrimeSans", sans-serif;
+}
 .app-shell {
   flex: 1;
 }

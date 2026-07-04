@@ -1,5 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -23,13 +23,17 @@ import { AuthService } from '../../auth.service';
 export class HeaderComponent {
   readonly isLoggedIn$;
   readonly currentUser$;
-  
+
   constructor(
     private authService: AuthService,
     private router: Router,
   ) {
     this.isLoggedIn$ = this.authService.isLoggedIn$;
     this.currentUser$ = this.authService.currentUser$;
+  }
+
+  getURL(): string {
+    return this.router.url;
   }
 
   getCollectionsLink(user: any): string {

@@ -11,6 +11,7 @@ import {
   tap,
   throwError,
 } from 'rxjs';
+import { environment } from '../environments/environment';
 
 interface SignupPayload {
   username: string;
@@ -40,8 +41,7 @@ interface LoginResponse {
   providedIn: 'root',
 })
 export class AuthService {
-  private readonly baseUrl =
-    'https://django-backend-vl0a.onrender.com/userAuth';
+  private readonly baseUrl = environment.djangoServerUrl;
   private readonly tokenStorageKey = 'moviesDbAuthToken';
   private readonly userStorageKey = 'moviesDbAuthUser';
   private readonly browser: boolean;
