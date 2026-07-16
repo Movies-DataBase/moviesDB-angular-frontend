@@ -3,9 +3,7 @@
     <div class="auth-copy">
       <p class="eyebrow">Start your collection.</p>
       <h1>Where your watchlist lives.</h1>
-      <p>
-        Curate. Share. Discover what's next.
-      </p>
+      <p>Curate. Share. Discover what's next.</p>
       <ul>
         <li>List every movie you've loved (and lied about watching)</li>
         <li>Rank it, share it, let the debates begin</li>
@@ -37,41 +35,66 @@
             required
           />
         </mat-form-field>
-        @if (usernameStatus === 'checking') {
+        @if (usernameStatus === "checking") {
           <p class="hint">Checking username...</p>
         }
-        @if (usernameStatus === 'available') {
-          <p class="hint success">Username is available.</p>
+        @if (usernameStatus === "available") {
+          <p class="hint success">Username is valid.</p>
         }
-        @if (usernameStatus === 'taken') {
+        @if (usernameStatus === "taken") {
           <p class="hint error">Username already exists.</p>
         }
 
+        <div class="email-row">
+          <mat-form-field appearance="outline">
+            <mat-label>Email</mat-label>
+            <input
+              matInput
+              id="email"
+              name="email"
+              type="email"
+              [(ngModel)]="email"
+              (ngModelChange)="onEmailChange($event)"
+              placeholder="john@example.com"
+              required
+            />
+          </mat-form-field>
+
+          <button
+            mat-flat-button
+            color="primary"
+            type="button"
+            class="otp-action-button"
+            (click)="onSendOtp()"
+          >
+            {{ otpSent ? "Resend OTP" : "Send OTP" }}
+          </button>
+        </div>
+        @if (emailStatus === "checking") {
+          <p class="hint">Checking email...</p>
+        }
+        @if (emailStatus === "available") {
+          <p class="hint success">Email is valid.</p>
+        }
+        @if (emailStatus === "taken") {
+          <p class="hint error">Email already exists.</p>
+        }
+        @if (emailStatus === "invalid") {
+          <p class="hint error">Enter a valid email format.</p>
+        }
+
         <mat-form-field appearance="outline">
-          <mat-label>Email</mat-label>
+          <mat-label>OTP</mat-label>
           <input
             matInput
-            id="email"
-            name="email"
-            type="email"
-            [(ngModel)]="email"
-            (ngModelChange)="onEmailChange($event)"
-            placeholder="john@example.com"
+            id="otp"
+            name="otp"
+            type="text"
+            [(ngModel)]="otp"
+            placeholder="Enter OTP"
             required
           />
         </mat-form-field>
-        @if (emailStatus === 'checking') {
-          <p class="hint">Checking email...</p>
-        }
-        @if (emailStatus === 'available') {
-          <p class="hint success">Email is available.</p>
-        }
-        @if (emailStatus === 'taken') {
-          <p class="hint error">Email already exists.</p>
-        }
-        @if (emailStatus === 'invalid') {
-          <p class="hint error">Enter a valid email format.</p>
-        }
 
         <mat-form-field appearance="outline">
           <mat-label>Password</mat-label>
@@ -106,10 +129,11 @@
           [disabled]="
             isSubmitting ||
             usernameStatus !== 'available' ||
-            emailStatus !== 'available'
+            emailStatus !== 'available' ||
+            otp.trim() === ''
           "
         >
-          {{ isSubmitting ? 'Creating...' : 'Sign Up' }}
+          {{ isSubmitting ? "Creating..." : "Sign Up" }}
         </button>
       </form>
 

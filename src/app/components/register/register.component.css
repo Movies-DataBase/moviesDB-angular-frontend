@@ -71,6 +71,37 @@
   width: 100%;
 }
 
+.email-row {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-end;
+}
+
+.email-row mat-form-field {
+  flex: 1;
+  min-width: 0;
+}
+
+.otp-action-button {
+  min-width: 6.5rem;
+  max-width: 8rem;
+  width: auto;
+  height: 56px;
+  line-height: 56px;
+  padding: 0 0.8rem;
+}
+
+@media (max-width: 640px) {
+  .email-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .otp-action-button {
+    width: 100%;
+  }
+}
+
 .hint,
 .error,
 .success {
@@ -80,7 +111,7 @@
 }
 
 .error {
-  color: #a3341f;
+  color: #a3341f !important;
 }
 
 .success {

@@ -17,6 +17,7 @@ interface SignupPayload {
   username: string;
   email: string;
   password: string;
+  otp: string;
 }
 
 interface LoginPayload {
@@ -85,6 +86,10 @@ export class AuthService {
         params: { email },
       })
       .pipe(map((response) => response.exists));
+  }
+
+  sendOtp(email: string): Observable<unknown> {
+    return this.http.post(`${this.baseUrl}/send-otp/`, { email });
   }
 
   login(payload: LoginPayload): Observable<LoginResponse> {

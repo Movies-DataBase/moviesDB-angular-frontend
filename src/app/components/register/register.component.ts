@@ -1,4 +1,3 @@
-
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -41,6 +40,8 @@ export class RegisterComponent {
   errorMessage = '';
   successMessage = '';
   isSubmitting = false;
+  otp = '';
+  otpSent = false;
 
   constructor(
     private authService: AuthService,
@@ -118,6 +119,23 @@ export class RegisterComponent {
     }, this.debounceMs);
   }
 
+  onSendOtp(): void {
+    if (!this.email.trim()) {
+      this.errorMessage = 'Please enter your email to receive an OTP.';
+      return;
+    }
+    this.authService.sendOtp(this.email.trim()).subscribe({
+      next: () => {
+        this.successMessage = 'OTP sent successfully.';
+        this.otpSent = true;
+      },
+      error: (err: any) => {
+        this.errorMessage =
+          err?.error?.error || 'Unable to send OTP. Please try again.';
+      },
+    });
+  }
+
   onSubmit(): void {
     if (!this.username.trim() || !this.email.trim() || !this.password) {
       this.errorMessage = 'Username, email and password are required.';
@@ -151,6 +169,7 @@ export class RegisterComponent {
         username: this.username.trim(),
         email: this.email.trim(),
         password: this.password,
+        otp: this.otp.trim(),
       })
       .subscribe({
         next: () => {
