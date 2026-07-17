@@ -45,6 +45,10 @@
           <p class="hint error">Username already exists.</p>
         }
 
+        @if (otpSent && otpRemainingSeconds > 0) {
+          <p class="hint error">OTP will expire in {{ otpExpirationText }}</p>
+        }
+
         <div class="email-row">
           <mat-form-field appearance="outline">
             <mat-label>Email</mat-label>

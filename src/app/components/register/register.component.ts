@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../auth.service';
@@ -7,7 +7,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-
+import { MatSnackBar } from '@angular/material/snack-bar';
 @Component({
   selector: 'app-register',
   standalone: true,
@@ -23,12 +23,15 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
   templateUrl: './register.component.html',
   styleUrl: './register.component.css',
 })
-export class RegisterComponent {
+export class RegisterComponent implements OnDestroy {
   private readonly debounceMs = 350;
+  private readonly otpExpirySeconds = 180;
   private usernameTimer: ReturnType<typeof setTimeout> | null = null;
   private emailTimer: ReturnType<typeof setTimeout> | null = null;
+  private otpTimer: ReturnType<typeof setInterval> | null = null;
   private usernameRequestId = 0;
   private emailRequestId = 0;
+  private _snackBar = inject(MatSnackBar);
 
   username = '';
   email = '';
@@ -42,6 +45,7 @@ export class RegisterComponent {
   isSubmitting = false;
   otp = '';
   otpSent = false;
+  otpRemainingSeconds = 0;
 
   constructor(
     private authService: AuthService,
@@ -126,12 +130,16 @@ export class RegisterComponent {
     }
     this.authService.sendOtp(this.email.trim()).subscribe({
       next: () => {
-        this.successMessage = 'OTP sent successfully.';
+        this._snackBar.open('OTP sent Successfully!', 'Close', {
+          duration: 3000,
+        });
         this.otpSent = true;
+        this.startOtpCountdown();
       },
       error: (err: any) => {
-        this.errorMessage =
-          err?.error?.error || 'Unable to send OTP. Please try again.';
+        this._snackBar.open('Failed to send OTP!', 'Close', {
+          duration: 3000,
+        });
       },
     });
   }
@@ -192,5 +200,41 @@ export class RegisterComponent {
 
   private isValidEmail(value: string): boolean {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+  }
+
+  private startOtpCountdown(): void {
+    this.clearOtpTimer();
+    this.otpRemainingSeconds = this.otpExpirySeconds;
+    this.otpTimer = setInterval(() => {
+      this.otpRemainingSeconds -= 1;
+      if (this.otpRemainingSeconds <= 0) {
+        this.clearOtpTimer();
+      }
+    }, 1000);
+  }
+
+  private clearOtpTimer(): void {
+    if (this.otpTimer) {
+      clearInterval(this.otpTimer);
+      this.otpTimer = null;
+    }
+  }
+
+  get otpExpirationText(): string {
+    const minutes = Math.floor(this.otpRemainingSeconds / 60);
+    const seconds = this.otpRemainingSeconds % 60;
+    return `${minutes.toString().padStart(2, '0')}:${seconds
+      .toString()
+      .padStart(2, '0')}`;
+  }
+
+  ngOnDestroy(): void {
+    if (this.usernameTimer) {
+      clearTimeout(this.usernameTimer);
+    }
+    if (this.emailTimer) {
+      clearTimeout(this.emailTimer);
+    }
+    this.clearOtpTimer();
   }
 }
