@@ -8,9 +8,9 @@ import {
   MatSnackBar,
   MatSnackBarVerticalPosition,
 } from '@angular/material/snack-bar';
-import { CollectionService } from '../../collection.service';
 import { environment } from '../../../environments/environment';
 import { AuthService } from '../../auth.service';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   standalone: true,
@@ -37,29 +37,31 @@ export class CollectionsComponent implements OnInit {
   durationInSeconds = 5;
   verticalPosition: MatSnackBarVerticalPosition = 'top';
 
-  constructor(
-    private collectionService: CollectionService,
-    private authService: AuthService,
-  ) {}
+  constructor(private http: HttpClient, private authService: AuthService) {}
 
   ngOnInit(): void {
     this.showSearchSpinner = true;
 
-    this.collectionService.getCollectionsList().subscribe({
-      next: (data: any) => {
-        this.collectionEntries = this.buildCollectionEntries(data.rows || []);
-        this.collectionCount = this.collectionEntries.length;
-        this.totalMovieCount = this.collectionEntries.reduce(
-          (count, entry) => count + entry.movies.length,
-          0,
-        );
-        this.showSearchSpinner = false;
-      },
-      error: (err) => {
-        console.error('Error occurred:', err);
-        this.showSearchSpinner = false;
-      },
-    });
+    const username = this.authService.getUsername() || '1111';
+    this.userId = username;
+
+    this.http
+      .get(`${environment.nodeServerUrl}api/userCollectionDetails/${this.userId}`)
+      .subscribe({
+        next: (data: any) => {
+          this.collectionEntries = this.buildCollectionEntries(data.rows || []);
+          this.collectionCount = this.collectionEntries.length;
+          this.totalMovieCount = this.collectionEntries.reduce(
+            (count, entry) => count + entry.movies.length,
+            0,
+          );
+          this.showSearchSpinner = false;
+        },
+        error: (err) => {
+          console.error('Error occurred:', err);
+          this.showSearchSpinner = false;
+        },
+      });
   }
 
   openSnackBar(): void {
