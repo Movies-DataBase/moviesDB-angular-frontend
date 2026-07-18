@@ -1,4 +1,4 @@
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
@@ -8,7 +8,7 @@ import {
   MatSnackBar,
   MatSnackBarVerticalPosition,
 } from '@angular/material/snack-bar';
-import { ActivatedRoute } from '@angular/router';
+import { CollectionService } from '../../collection.service';
 import { environment } from '../../../environments/environment';
 import { AuthService } from '../../auth.service';
 
@@ -38,37 +38,28 @@ export class CollectionsComponent implements OnInit {
   verticalPosition: MatSnackBarVerticalPosition = 'top';
 
   constructor(
-    private http: HttpClient,
-    private route: ActivatedRoute,
+    private collectionService: CollectionService,
     private authService: AuthService,
   ) {}
 
   ngOnInit(): void {
     this.showSearchSpinner = true;
-    const username = this.route.snapshot.paramMap.get('username');
-    this.userId = username || '1111';
 
-    if (username) {
-      this.authService.saveData(username);
-    }
-
-    this.http
-      .get(`${environment.nodeServerUrl}api/userCollectionDetails/${this.userId}`)
-      .subscribe({
-        next: (data: any) => {
-          this.collectionEntries = this.buildCollectionEntries(data.rows || []);
-          this.collectionCount = this.collectionEntries.length;
-          this.totalMovieCount = this.collectionEntries.reduce(
-            (count, entry) => count + entry.movies.length,
-            0,
-          );
-          this.showSearchSpinner = false;
-        },
-        error: (err) => {
-          console.error('Error occurred:', err);
-          this.showSearchSpinner = false;
-        },
-      });
+    this.collectionService.getCollectionsList().subscribe({
+      next: (data: any) => {
+        this.collectionEntries = this.buildCollectionEntries(data.rows || []);
+        this.collectionCount = this.collectionEntries.length;
+        this.totalMovieCount = this.collectionEntries.reduce(
+          (count, entry) => count + entry.movies.length,
+          0,
+        );
+        this.showSearchSpinner = false;
+      },
+      error: (err) => {
+        console.error('Error occurred:', err);
+        this.showSearchSpinner = false;
+      },
+    });
   }
 
   openSnackBar(): void {
